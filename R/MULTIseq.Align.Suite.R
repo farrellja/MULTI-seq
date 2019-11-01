@@ -222,6 +222,18 @@ MULTIseq.preProcess <- function(R1, R2, cellIDs, cell=c(1,16), umi=c(17,28), tag
   r2 <- readFastq(R2)
   gc()
 
+  # Check to make sure all reads are sufficient length
+  if ((min(width(r1)) < max(c(cell, umi))) | (min(width(r2)) < max(tag))) {
+    total.reads <- length(r1)
+    short.r1 <- which(width(r1) < max(c(cell, umi)))
+    short.r2 <- which(width(r2) < max(tag))
+    short.reads <- sort(unique(c(short.r1, short.r2)))
+    warning(length(short.reads), " of ", total.reads, " reads were removed because they are not full-length.")
+    keep.reads <- setdiff(1:total.reads, short.reads)
+    r1 <- r1[keep.reads]
+    r2 <- r2[keep.reads]
+  }
+  
   print("Assembling read table...")
   readTable <- cbind(as.data.frame(subseq(sread(r1),cell[1],cell[2])),
                      as.data.frame(subseq(sread(r1),umi[1],umi[2])),
