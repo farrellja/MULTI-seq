@@ -224,6 +224,7 @@ MULTIseq.preProcess <- function(R1, R2, cellIDs, cell=c(1,16), umi=c(17,28), tag
 
   # Check to make sure all reads are sufficient length
   if ((min(width(r1)) < max(c(cell, umi))) | (min(width(r2)) < max(tag))) {
+    print("Filtering reads...")
     total.reads <- length(r1)
     short.r1 <- which(width(r1) < max(c(cell, umi)))
     short.r2 <- which(width(r2) < max(tag))
@@ -233,6 +234,7 @@ MULTIseq.preProcess <- function(R1, R2, cellIDs, cell=c(1,16), umi=c(17,28), tag
     r1 <- r1[keep.reads]
     r2 <- r2[keep.reads]
   }
+  gc()
   
   print("Assembling read table...")
   readTable <- cbind(as.data.frame(subseq(sread(r1),cell[1],cell[2])),
